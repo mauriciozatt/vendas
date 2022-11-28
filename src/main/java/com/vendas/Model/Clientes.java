@@ -19,6 +19,10 @@ public class Clientes {
 	@Column(name = "nome", length = 100)
 	private String nome;
 
+	@Override
+	public String toString() {
+		return "Clientes [id=" + id + ", nome=" + nome + "]";
+	}
 
 	// construtor
 	public Clientes() {
