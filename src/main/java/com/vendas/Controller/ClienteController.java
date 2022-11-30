@@ -1,7 +1,11 @@
 package com.vendas.Controller;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.vendas.Model.Clientes;
 import com.vendas.Repository.ClientesRepository;
+
+import net.bytebuddy.implementation.bytecode.Throw;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -29,43 +36,63 @@ public class ClienteController {
 		super();
 		this.clientesRepository = clientesRepository;
 	}
+	
+	
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<Clientes> getClienteById1(@PathVariable Integer id) {
-		Optional<Clientes> clienteRetornado = clientesRepository.findById(id);
-		if (clienteRetornado.isPresent()) { // se o id está persistido no banco..
-			return ResponseEntity.ok(clienteRetornado.get());
-		} else
-			return ResponseEntity.notFound().build();
+	@GetMapping
+	public List<Clientes> pesquisa(Clientes clienteFiltro) {
+
+		// Para aplicar filtros crio um ExampleMatcher que são regras de filtro
+		// depois crio um example, este irá mapear as propriedades que estão alimentadas
+		// da minha entidade e aplicar as regras do ExampleMatcher
+
+		ExampleMatcher matcherRegra = ExampleMatcher.matching().withIgnoreCase()
+				.withStringMatcher(StringMatcher.CONTAINING);
+
+		Example example = Example.of(clienteFiltro, matcherRegra);
+
+		return clientesRepository.findAll(example);
+
 	}
+
+	@GetMapping("/{id}")
+	public Clientes getClienteById1(@PathVariable Integer id) {
+//método orElseThrow retorna o meu cliente or senão retorna a exceção..... 
+		return clientesRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+	};
+
+	// Anotation @RequestBody - basicamente irá converter meu json para a minha
+	// entidade cliente
 
 	@PostMapping
-	public ResponseEntity<Clientes> salvar(@RequestBody Clientes cliente) { // @RequestBody - basicamente irá converter
-																			// meu json para a minha entidade cliente
-		Clientes c = clientesRepository.save(cliente);
-		return ResponseEntity.ok(c);
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Clientes salvar(@RequestBody Clientes cliente) {
+		return clientesRepository.save(cliente);
 	}
 
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity deletar(@PathVariable(value = "id") Integer id) {
+	@DeleteMapping("/{id}")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void deletar(@PathVariable(value = "id") Integer id) {
 
 		if (clientesRepository.existsById(id)) {
 			clientesRepository.deleteById(id);
-			return ResponseEntity.noContent().build();
-		} else
-			return ResponseEntity.notFound().build();
+
+		} else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado para exclusão");
+		}
 
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity atualizar(@PathVariable Integer id, @RequestBody Clientes cliente) {
+	@PutMapping("/{id}")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void atualizar(@PathVariable Integer id, @RequestBody Clientes cliente) {
 
 		if (clientesRepository.existsById(id)) {
 			cliente.setId(id);
 			clientesRepository.save(cliente);
-			return ResponseEntity.noContent().build();
 		} else
-			return ResponseEntity.notFound().build();
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado para atualização");
 
 	}
 
