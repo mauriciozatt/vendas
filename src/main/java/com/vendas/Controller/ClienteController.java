@@ -49,14 +49,14 @@ public class ClienteController {
 		ExampleMatcher matcherRegra = ExampleMatcher.matching().withIgnoreCase()
 				.withStringMatcher(StringMatcher.CONTAINING);
 
-		Example example = Example.of(clienteFiltro, matcherRegra);
+		Example<Clientes> example = Example.of(clienteFiltro, matcherRegra);
 
 		return clientesRepository.findAll(example);
 
 	}
 
 	@GetMapping("/{id}")
-	public Clientes getClienteById1(@PathVariable Integer id) {
+	public Clientes getClienteById(@PathVariable Integer id) {
 //método orElseThrow retorna o meu cliente or senão retorna a exceção..... 
 		return clientesRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
@@ -89,7 +89,7 @@ public class ClienteController {
 	public void atualizar(@PathVariable Integer id, @RequestBody Clientes cliente) {
 
 		if (clientesRepository.existsById(id)) {
-			cliente.setId(id);
+			cliente.setId(id); 
 			clientesRepository.save(cliente);
 		} else
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado para atualização");

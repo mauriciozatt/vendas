@@ -24,6 +24,9 @@ public class Produtos {
 	@Column(name = "preco" )
 	private BigDecimal preco;
 
+	
+	
+	
 	// Gets e Setter...
 	public Integer getId() {
 		return id;
