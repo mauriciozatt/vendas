@@ -1,13 +1,10 @@
 package com.vendas.Controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.vendas.Model.Clientes;
 import com.vendas.Repository.ClientesRepository;
 
-import net.bytebuddy.implementation.bytecode.Throw;
-
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
@@ -36,8 +31,6 @@ public class ClienteController {
 		super();
 		this.clientesRepository = clientesRepository;
 	}
-	
-	
 
 	@GetMapping
 	public List<Clientes> pesquisa(Clientes clienteFiltro) {
@@ -89,7 +82,7 @@ public class ClienteController {
 	public void atualizar(@PathVariable Integer id, @RequestBody Clientes cliente) {
 
 		if (clientesRepository.existsById(id)) {
-			cliente.setId(id); 
+			cliente.setId(id);
 			clientesRepository.save(cliente);
 		} else
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado para atualização");

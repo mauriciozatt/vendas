@@ -60,18 +60,32 @@ public class ProdutosController {
 		return produtosRepository.save(produto);
 	}
 
+	/*
+	 * @PutMapping("/{id}")
+	 * 
+	 * @ResponseStatus(value = HttpStatus.NO_CONTENT) public void
+	 * atualizar(@PathVariable Integer id, @RequestBody Produtos produto) {
+	 * 
+	 * if (produtosRepository.existsById(id)) { produtosRepository.save(produto); }
+	 * else throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+	 * "Produto não encontrado para atualização"); };
+	 */
+
+	/*
+	 * Usando lambda ()->{} - vou retornar meu elemento para o parâmetro P, e dentro
+	 * da {} posso manipular meu elemento P...
+	 */
+
 	@PutMapping("/{id}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void atualizar(@PathVariable Integer id, @RequestBody Produtos produto) {
 
-		if (produtosRepository.existsById(id)) {
-			// preciso passar o ID, pois meu novo objeto não vem com ID no JSON e preciso
-			// passar o objeto completo quando utilizo o método PUT
-			produto.setId(id);
-			produtosRepository.save(produto);
-		} else
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado para atualização");
-	};
+		produtosRepository.findById(id).map((p) -> {
+			produto.setId(p.getId());
+			return produtosRepository.save(produto);
+		}).orElseThrow(
+				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado para atualização"));
+	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

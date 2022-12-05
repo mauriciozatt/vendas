@@ -7,8 +7,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "CLIENTES")
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Clientes {
 
 	@Column(name = "id")
@@ -19,34 +27,8 @@ public class Clientes {
 	@Column(name = "nome", length = 100)
 	private String nome;
 
-	@Override
-	public String toString() {
-		return "Clientes [id=" + id + ", nome=" + nome + "]";
-	}
-
-	// construtor
-	public Clientes() {
-	};
-
 	public Clientes(String nome) {
 		this.nome = nome;
 	};
-
-	// Gets e setters...
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
 
 }

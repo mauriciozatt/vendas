@@ -11,8 +11,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "PEDIDOS_ITENS")
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemPedido {
 
 	@Id
@@ -20,51 +28,15 @@ public class ItemPedido {
 	@Column(name = "ID")
 	private Integer id;
 
-	// muitos itens pedido para um pedido..... Ou seja o meu pedido pode estar com
-	// vários itens de pedido
 	@ManyToOne
 	@JoinColumn(name = "PEDIDO_ID")
 	private Pedidos pedido;
 
-	// Muitos itens de pedido para um produto... Ou seja o meu produto pode estar em
-	// vários itens de pedido
 	@ManyToOne
 	@JoinColumn(name = "PRODUTO_ID")
 	private Produtos produto;
 
 	@Column(name = "QUANTIDADE", precision = 20, scale = 2)
 	private BigDecimal quantidade;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Pedidos getPedido() {
-		return pedido;
-	}
-
-	public void setPedido(Pedidos pedido) {
-		this.pedido = pedido;
-	}
-
-	public Produtos getProduto() {
-		return produto;
-	}
-
-	public void setProduto(Produtos produto) {
-		this.produto = produto;
-	}
-
-	public BigDecimal getQuantidade() {
-		return quantidade;
-	}
-
-	public void setQuantidade(BigDecimal quantidade) {
-		this.quantidade = quantidade;
-	}
 
 }
