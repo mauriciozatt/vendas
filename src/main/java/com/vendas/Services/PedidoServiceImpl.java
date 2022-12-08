@@ -2,6 +2,7 @@ package com.vendas.Services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -39,7 +40,7 @@ public class PedidoServiceImpl implements PedidosService {
 
 		// Popular meu pedido
 		Clientes c = clientesRepository.findById(dto.getCliente())
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado!"));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente não encontrado!"));
 
 		pedidoNovo.setCliente(c);
 
@@ -61,7 +62,7 @@ public class PedidoServiceImpl implements PedidosService {
 	private List<ItemPedido> ConverterItens(Pedidos pedido, List<ItemPedidoDTO> itensDTO) {
 
 		if (itensDTO.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Impossível salvar pedido sem Itens!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossível salvar pedido sem Itens!");
 		}
 
 		// Vai percorer minha lista de ItemPedidoDTO para cada elemento add no DTO(dai
@@ -69,7 +70,7 @@ public class PedidoServiceImpl implements PedidosService {
 		return itensDTO.stream().map(dto -> {
 
 			Produtos produto = produtosRepository.findById(dto.getProduto()).orElseThrow(
-					() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto Inválido! " + dto.getProduto()));
+					() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto Inválido! " + dto.getProduto()));
 
 			ItemPedido itemPedido = new ItemPedido();
 			itemPedido.setPedido(pedido);
@@ -79,7 +80,41 @@ public class PedidoServiceImpl implements PedidosService {
 			return itemPedido;
 
 		}).collect(Collectors.toList());
-
 	}
 
+	// Obter pedido completo
+
+	@Override
+	public Optional<Pedidos> obterPedidoCompleto(Integer id) {	
+		return pedidoRepository.findByIdFetchItens(id);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
