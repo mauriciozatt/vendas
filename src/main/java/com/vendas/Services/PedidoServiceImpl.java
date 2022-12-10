@@ -19,8 +19,10 @@ import com.vendas.Repository.ClientesRepository;
 import com.vendas.Repository.ItemPedidoRepository;
 import com.vendas.Repository.PedidosRepository;
 import com.vendas.Repository.ProdutosRepository;
+import com.vendas.dto.AtualizaStatusPedidoDTO;
 import com.vendas.dto.ItemPedidoDTO;
 import com.vendas.dto.PedidoDTO;
+import com.vendas.enums.StatusPedido;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +48,7 @@ public class PedidoServiceImpl implements PedidosService {
 
 		pedidoNovo.setTotal(dto.getTotal());
 		pedidoNovo.setDataPedido(LocalDate.now());
+		pedidoNovo.setStatus(StatusPedido.FINALIZADO);
 
 //pego meu DTO converto para uma lista de ItensPedido e salvo esses  itens... 
 		List<ItemPedido> itens = ConverterItens(pedidoNovo, dto.getItens());
@@ -80,41 +83,22 @@ public class PedidoServiceImpl implements PedidosService {
 			return itemPedido;
 
 		}).collect(Collectors.toList());
-	}
+	};
 
 	// Obter pedido completo
+	@Override
+	public Optional<Pedidos> obterPedidoCompleto(Integer id) {
+		return pedidoRepository.findByIdFetchItens(id);
+	};
 
 	@Override
-	public Optional<Pedidos> obterPedidoCompleto(Integer id) {	
-		return pedidoRepository.findByIdFetchItens(id);
-	}
+	public void AtualizaStatusPedido(Integer id, AtualizaStatusPedidoDTO dto) {
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		pedidoRepository.findById(id).map(pedido -> {
+			pedido.setStatus(StatusPedido.valueOf(dto.getStatus()));
+			return pedidoRepository.save(pedido);
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado!"));
+
+	};
+
 }

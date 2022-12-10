@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.vendas.Model.ItemPedido;
 import com.vendas.Model.Pedidos;
 import com.vendas.Services.PedidosService;
+import com.vendas.dto.AtualizaStatusPedidoDTO;
 import com.vendas.dto.InformacaoesPedidoDTO;
 import com.vendas.dto.InformacoesItemPedidoDTO;
 import com.vendas.dto.PedidoDTO;
@@ -50,14 +52,9 @@ public class PedidoController {
 
 	private InformacaoesPedidoDTO converter(Pedidos pedido) {
 
-		return InformacaoesPedidoDTO
-				.builder()
-				.codigo(pedido.getId())
-				.nomeCliente(pedido.getCliente().getNome())
-				.data(pedido.getDataPedido().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-				.total(pedido.getTotal())
-				.itens(converterItens(pedido.getItens()))
-				.build();
+		return InformacaoesPedidoDTO.builder().codigo(pedido.getId()).nomeCliente(pedido.getCliente().getNome())
+				.data(pedido.getDataPedido().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).total(pedido.getTotal())
+				.status(pedido.getStatus().name()).itens(converterItens(pedido.getItens())).build();
 		// .buid cria o objeto e já retorna pra mim sem a necessidade de eu instanciar
 		// esse objeto ...
 	};
@@ -72,15 +69,17 @@ public class PedidoController {
 		// consigo manipular)
 		return itens.stream().map(item ->
 
-		InformacoesItemPedidoDTO
-		.builder()
-		.descricaoProduto(item.getProduto().getDescricao())
-		.preco(item.getProduto().getPreco())
-		.quantidade(item.getQuantidade())
-		.build()
+		InformacoesItemPedidoDTO.builder().descricaoProduto(item.getProduto().getDescricao())
+				.preco(item.getProduto().getPreco()).quantidade(item.getQuantidade()).build()
 
 		).collect(Collectors.toList());
 
 	};
+
+	@PatchMapping("/{id}")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void updatePedido(@PathVariable Integer id, @RequestBody AtualizaStatusPedidoDTO dto) {
+		service.AtualizaStatusPedido(id, dto);
+	}
 
 };
