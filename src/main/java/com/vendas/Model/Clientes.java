@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class Clientes {
 	private Integer id;
 
 	@Column(name = "nome", length = 100)
+	@NotEmpty(message = "{campo.nome.obrigatorio}")
 	private String nome;
 
 	public Clientes(String nome) {

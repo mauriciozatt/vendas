@@ -1,6 +1,9 @@
 package com.vendas.Controller;
 
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -18,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.vendas.Model.Clientes;
 import com.vendas.Repository.ClientesRepository;
+
+
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -46,7 +51,7 @@ public class ClienteController {
 
 		return clientesRepository.findAll(example);
 
-	}
+	} 
 
 	@GetMapping("/{id}")
 	public Clientes getClienteById(@PathVariable Integer id) {
@@ -60,7 +65,7 @@ public class ClienteController {
 
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Clientes salvar(@RequestBody Clientes cliente) {
+	public Clientes salvar(@RequestBody @Valid Clientes cliente) {
 		return clientesRepository.save(cliente);
 	}
 
@@ -79,7 +84,7 @@ public class ClienteController {
 
 	@PutMapping("/{id}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void atualizar(@PathVariable Integer id, @RequestBody Clientes cliente) {
+	public void atualizar(@PathVariable Integer id, @RequestBody @Valid Clientes cliente) {
 
 		if (clientesRepository.existsById(id)) {
 			cliente.setId(id);

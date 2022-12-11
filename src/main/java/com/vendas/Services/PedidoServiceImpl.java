@@ -64,9 +64,9 @@ public class PedidoServiceImpl implements PedidosService {
 
 	private List<ItemPedido> ConverterItens(Pedidos pedido, List<ItemPedidoDTO> itensDTO) {
 
-		if (itensDTO.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossível salvar pedido sem Itens!");
-		}
+//		if (itensDTO.isEmpty()) {
+//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossível salvar pedido sem Itens!");
+		// }
 
 		// Vai percorer minha lista de ItemPedidoDTO para cada elemento add no DTO(dai
 		// consigo manipular)
