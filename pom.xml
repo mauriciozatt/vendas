@@ -7,14 +7,50 @@
 		<version>2.7.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.vendas</groupId>
 	<artifactId>vendas</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>${project.pacote}</packaging>
 	<name>vendas</name>
 	<description>Demo project for Spring Boot</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
+	<!-- Perfilssss -->
+	<profiles>
+
+	<!-- Develop -->
+		<profile>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<id>develop</id>
+
+			<properties>
+				<project.pacote>jar</project.pacote>
+				<tomcat.scope>compile</tomcat.scope>
+			</properties>
+
+		</profile>
+
+	<!-- Master -->
+		<profile>
+			<id>Master</id>
+			<properties>
+				<project.pacote>war</project.pacote>
+				<tomcat.scope>provided</tomcat.scope>
+			</properties>
+			
+		</profile>
+
+	</profiles>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -73,6 +109,21 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>${tomcat.scope}</scope>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
